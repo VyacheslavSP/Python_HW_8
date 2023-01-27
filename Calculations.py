@@ -7,7 +7,8 @@ stack = []
 OPERATOR = ['+', '-', '*', '/', '^']
 
 
-class MyError(Exception):                   # я не знаю как правильно вывести ошибки тут. Вылетает много технической информации
+# я не знаю как правильно вывести ошибки тут. Вылетает много технической информации
+class MyError(Exception):
     def __init__(self, text):
         os.system('cls')
         self.txt = text
@@ -49,4 +50,4 @@ def Calc(valid_string):
     return stack.pop()
 
 
-# print(Calc('2 3 0 / *'))
+# print(Calc('2 3 5 / *'))

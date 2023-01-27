@@ -1,5 +1,7 @@
 import Calculations
+import Valid_strring
+string = input("Введите выражение   ")
 
-valid_string = '6 2 / 1 5 * + 7 -'
+val_string = Valid_strring.valid_string(string)
 
-print(Calculations.Calc(valid_string))
+print(Calculations.Calc(val_string))

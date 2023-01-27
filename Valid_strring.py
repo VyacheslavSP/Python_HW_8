@@ -1,46 +1,80 @@
-OPERATOR = ['+', '-', '*', '/', '^']
-# приоритетность задана через индес строчки с элементом в списке
-operator_priority = [['('], ['+', '-'], ['*', '/'], ['^']]
+import re
 
 
-def to_valid_string(input_string):
-    valid_string = ''
-    stack_char = []
-    for char in input_string:
-        try:
-            int_char = int(char)
-            if (0 <= int_char <= 9):
-                valid_string += (str(int_char)+' ')
-        except:
-            if (char == '('):
-                stack_char.append(char)
-            elif (char == ')'):
-                for stack_element in stack_char:
-                    if (stack_element != '('):
-                        valid_string += stack_element
-                    else:
-                        stack_char.pop(stack_char.index('('))
-            elif (char in OPERATOR):
-                #    while (len(stack_char) != 0):
-                count = 0
-                for count in range(len(stack_char)):
-                   # for element_of_stack in stack_char:
-                    for i in operator_priority:
-                        for j in i:
-                            if (char == j):
-                                idex_priority = operator_priority.index(i)
-                            elif len(stack_char) > 0:
-                                if (stack_char[0] == j):
-                                    Index_stack_element = operator_priority.index(
-                                        i)
-                    if (Index_stack_element >= idex_priority):
-                        valid_string += str(stack_char.pop()) + ' '
-                stack_char.append(char)
-               # stack_char.pop(0)
-    for stack_element in stack_char:
-        valid_string += str(stack_element)
-
-    return valid_string
+def add_char(str):
+    str += ';'
+    return str
 
 
-print(to_valid_string("6/2+1*5-7"))
+def tokenze(code: str) -> list:
+    return code.split()
+
+
+def op_prior(char_op: str):
+    if char_op == "^":
+        return 6
+    elif char_op == "*":
+        return 5
+    elif char_op == "/":
+        return 5
+    elif char_op == "%":
+        return 3
+    elif char_op == "+":
+        return 2
+    elif char_op == "-":
+        return 2
+
+
+def isOp(c: str) -> bool:
+    if c == "-" or c == "+" or c == "*" or c == "/" or c == "^":
+        return True
+    return False
+
+
+def opn(code: str) -> None:
+    p = 0
+    op_stack: list = []
+    res: list = []
+    while True:
+        v = code[p]
+        p += 1
+        if v == ';':
+            break
+        if re.match("[0-9]+[.]*[0-9]*", v) or re.match("[A-Za-z]+", v):
+            res.append(v)
+        elif isOp(v):
+            while (len(op_stack) > 0 and
+                   op_stack[-1] != "(" and
+                   op_prior(v) <= op_prior(op_stack[-1])):
+                res.append(op_stack.pop())
+              
+            op_stack.append(v)
+        elif v == ')':
+            while len(op_stack) > 0:
+                x = op_stack.pop()
+                if x == '(':
+                    break
+                res.append(x)
+        elif v == "(":
+            op_stack.append(v)
+    while len(op_stack) > 0:
+        res.append(op_stack.pop())
+
+    return res
+
+
+def valid_string(string_input):
+    string_input = add_char(string_input)
+    str_correct = ''
+    Pol_not_str = ''
+    for c in string_input:
+        if c == "-" or c == "+" or c == "*" or c == "/" or c == "^" or c == "(" or c == ")":
+            str_correct += ' ' + c + ' '
+        elif (c == ";"):
+            str_correct += ' ' + c
+        else:
+            str_correct += c
+    Pol_not_list = opn(tokenze(str_correct))
+    for element in Pol_not_list:
+        Pol_not_str += str(element)+' '
+    return Pol_not_str
